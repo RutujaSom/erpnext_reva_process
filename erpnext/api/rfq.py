@@ -24,3 +24,32 @@ def get_suppliers_by_group(supplier_group):
         fields=["name", "supplier_name"]
     )
     return suppliers
+
+
+
+@frappe.whitelist()
+def get_suppliers_by_item(item):
+    print("item .....")
+    """
+    Get all suppliers linked to a given Item.
+    """
+    suppliers = frappe.db.sql("""
+        SELECT supplier 
+        FROM `tabItem Supplier`
+        WHERE parent = %s
+    """, item, as_dict=True)
+    print("suppliers .....",suppliers)
+
+    return suppliers
+
+
+@frappe.whitelist()
+def get_item_suppliers(item):
+    print(">>>>>>>>")
+    """Return list of suppliers linked to an Item."""
+    suppliers = frappe.db.get_all(
+        "Item Supplier",
+        filters={"parent": item},
+        fields=["supplier"]
+    )
+    return [s["supplier"] for s in suppliers]

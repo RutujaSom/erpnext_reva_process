@@ -166,31 +166,6 @@ frappe.ui.form.on("Request for Quotation", {
 				},
 				__("View")
 			);
-			// if (frm.doc.docstatus === 1) {
-			// 	frm.add_custom_button(__('Update After Submit'), function() {
-			// 		frappe.call({
-			// 			method: "erpnext.api.rfq.unlock_rfq",
-			// 			args: { rfq_name: frm.doc.name },
-			// 			callback: function(r) {
-			// 				if (!r.exc) {
-
-			// 					// unlock the form
-			// 					frm.set_read_only(false);
-
-			// 					// refresh child tables to show Add Row buttons
-			// 					Object.keys(frm.fields_dict).forEach(fieldname => {
-									
-			// 						if (frm.fields_dict[fieldname].grid) {
-			// 							frm.fields_dict[fieldname].grid.refresh();
-			// 						}
-			// 					});
-			// 					alert("edit form ....")
-			// 					frm.refresh();
-			// 				}
-			// 			}
-			// 		});
-			// 	});
-			// }
 
 			if (frm.doc.docstatus === 1) {
 				frm.add_custom_button(__('Update After Submit'), function() {
@@ -201,22 +176,7 @@ frappe.ui.form.on("Request for Quotation", {
 							if (!r.exc) {
 								// Mark document as draft again (docstatus=0)
 								frm.doc.docstatus = 0;
-
-								// Unlock the form
-								frm.set_read_only(false);
-
-								// Refresh all fields
-								frm.refresh_fields();
-
-								// Refresh child tables
-								Object.keys(frm.fields_dict).forEach(fieldname => {
-									if (frm.fields_dict[fieldname].grid) {
-										frm.fields_dict[fieldname].grid.refresh();
-									}
-								});
-
-								// Re-render toolbar (important for Update/Save buttons)
-								frm.toolbar.refresh();
+								frm.reload_doc();
 
 								frappe.msgprint("Form unlocked for editing.");
 							}
@@ -369,22 +329,91 @@ frappe.ui.form.on("Request for Quotation", {
 		dialog.show();
 	},
 
-    custom_supplier_group: function(frm) {
-        if (frm.doc.custom_supplier_group) {
-            frappe.call({
-                method: "erpnext.api.rfq.get_suppliers_by_group",
-                args: { supplier_group: frm.doc.custom_supplier_group },
-                callback: function(r) {
-                    if (r.message) {
-                        // Clear existing suppliers
-                        frm.clear_table("suppliers");
+    // custom_supplier_group: function(frm) {
+    //     if (frm.doc.custom_supplier_group) {
+    //         frappe.call({
+    //             method: "erpnext.api.rfq.get_suppliers_by_group",
+    //             args: { supplier_group: frm.doc.custom_supplier_group },
+    //             callback: function(r) {
+    //                 if (r.message) {
+    //                     // Clear existing suppliers
+    //                     frm.clear_table("suppliers");
 
-                        // Add all suppliers from group
+    //                     // Add all suppliers from group
+    //                     r.message.forEach(function(supp) {
+    //                         let row = frm.add_child("suppliers");
+    //                         row.supplier = supp.name;
+    //                     });
+
+    //                     frm.refresh_field("suppliers");
+    //                 }
+    //             }
+    //         });
+    //     }
+    // },
+
+	custom_supplier_group: function(frm) {
+    if (frm.doc.custom_supplier_group) {
+        frappe.call({
+            method: "erpnext.api.rfq.get_suppliers_by_group",
+            args: { supplier_group: frm.doc.custom_supplier_group },
+            callback: function(r) {
+                if (r.message) {
+                    let has_records = frm.doc.suppliers && frm.doc.suppliers.length > 0;
+
+                    // Check if the only record is blank
+                    let only_blank_row = (
+                        has_records &&
+                        frm.doc.suppliers.length === 1 &&
+                        !frm.doc.suppliers[0].supplier
+                    );
+
+                    if (has_records && !only_blank_row) {
+                        frappe.confirm(
+                            "This will remove existing suppliers. Do you want to continue?",
+                            function() {
+                                frm.clear_table("suppliers");
+                                r.message.forEach(function(supp) {
+                                    let row = frm.add_child("suppliers");
+                                    row.supplier = supp.name;
+                                });
+                                frm.refresh_field("suppliers");
+                            }
+                        );
+                    } else {
+                        // No records or only blank row → directly add
+                        frm.clear_table("suppliers");
                         r.message.forEach(function(supp) {
                             let row = frm.add_child("suppliers");
                             row.supplier = supp.name;
                         });
+                        frm.refresh_field("suppliers");
+                    }
+                }
+            }
+        });
+    }
+},
 
+
+
+	custom_item: function(frm) {
+        if (frm.doc.custom_item) {
+            frappe.call({
+                method: "erpnext.api.rfq.get_item_suppliers",
+                args: {
+                    item: frm.doc.custom_item
+                },
+                callback: function(r) {
+                    if (r.message) {
+                        r.message.forEach(supplier => {
+                            // Avoid duplicates
+                            let exists = frm.doc.suppliers.some(s => s.supplier === supplier);
+                            if (!exists) {
+                                let child = frm.add_child("suppliers");
+                                child.supplier = supplier;
+                            }
+                        });
                         frm.refresh_field("suppliers");
                     }
                 }
