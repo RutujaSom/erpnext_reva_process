@@ -673,5 +673,16 @@ fields_for_group_similar_items = ["qty", "amount"]
 fixtures = [
     {"dt": "Workflow", "filters": [["document_type", "=", "Supplier"]]},
     {"dt": "Workflow State"},
-    {"dt": "Workflow Action Master"}
+    {"dt": "Workflow Action Master"},
+    
+    
+    
+    {
+        "dt": "Server Script",
+        "filters": [
+            ["name", "in", [
+                "Trigger Notification For Supplier For Approve Request"
+            ]]
+        ]
+    }
 ]
