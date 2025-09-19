@@ -17,7 +17,7 @@ from erpnext.accounts.party import (
 )
 from erpnext.controllers.website_list_for_contact import add_role_for_portal_user
 from erpnext.utilities.transaction_base import TransactionBase
-from erpnext.api.supplier_creation_file import after_supplier_insert
+from erpnext.api.supplier_creation_file import after_supplier_insert,after_supplier_approved
 
 class Supplier(TransactionBase):
 	# begin: auto-generated types
@@ -102,6 +102,11 @@ class Supplier(TransactionBase):
 	def on_update(self):
 		self.create_primary_contact()
 		self.create_primary_address()
+
+	def on_update_after_submit(self):
+		after_supplier_approved(self)
+
+
 
 	def after_insert(self):
 		after_supplier_insert(self)
