@@ -686,3 +686,9 @@ fixtures = [
         ]
     }
 ]
+
+
+# Add the permission to RM to get the task of employee reporting to him
+permission_query_conditions = {
+    "Task": "erpnext.api.task.get_permission_query_conditions"
+}

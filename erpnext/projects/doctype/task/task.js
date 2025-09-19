@@ -4,6 +4,14 @@
 frappe.provide("erpnext.projects");
 
 frappe.ui.form.on("Task", {
+
+	refresh: function (frm) {
+        // If Task is Approved → make form read-only
+        if (frm.doc.workflow_state_for_task === "Approved" || frm.doc.workflow_state_for_task === "Pending") {
+            frm.disable_form(true);
+        }
+    },
+
 	setup: function (frm) {
 		frm.make_methods = {
 			Timesheet: () =>
