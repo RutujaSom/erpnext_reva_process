@@ -39,6 +39,7 @@
   "incoterm",
   "named_place",
   "tc_name",
+  "add_multiple_terms",
   "terms",
   "printing_settings",
   "select_print_heading",
@@ -339,6 +340,12 @@
   {
    "fieldname": "column_break_iamv",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "add_multiple_terms",
+   "fieldtype": "Table",
+   "label": "Add Multiple Terms",
+   "options": "RFQ Terms Table"
   }
  ],
  "grid_page_length": 50,
@@ -346,7 +353,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-17 17:30:40.562258",
+ "modified": "2025-09-20 12:49:40.505388",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Request for Quotation",
