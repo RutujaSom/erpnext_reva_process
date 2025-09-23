@@ -676,6 +676,12 @@ fixtures = [
     {"dt": "Workflow Action Master"},
     
     
+    {"dt": "Workflow", "filters": [["document_type", "=", "Purchase Order"]]},
+    {"dt": "Workflow State"},
+    {"dt": "Workflow Action"},
+
+
+    
     
     {
         "dt": "Server Script",
@@ -686,6 +692,18 @@ fixtures = [
         ]
     }
 ]
+
+
+# hooks.py in your custom app
+doc_events = {
+    "Purchase Order": {
+        "on_update_after_submit": "erpnext.api.Purchase_Order_mail.send_email_on_workflow_state"
+    }
+}
+
+
+
+
 
 
 # Add the permission to RM to get the task of employee reporting to him
