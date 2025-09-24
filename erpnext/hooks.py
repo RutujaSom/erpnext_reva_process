@@ -673,5 +673,26 @@ fields_for_group_similar_items = ["qty", "amount"]
 fixtures = [
     {"dt": "Workflow", "filters": [["document_type", "=", "Supplier"]]},
     {"dt": "Workflow State"},
-    {"dt": "Workflow Action Master"}
+    {"dt": "Workflow Action Master"},
+    
+    {"dt": "Workflow", "filters": [["document_type", "=", "Supplier Quotation"]]},
+    {"dt": "Workflow State"},
+    {"dt": "Workflow Action Master"},
+
+
+
+{
+        "dt": "Client Script",
+        "filters": [
+            ["name", "in", ["Purchase Order Approved Suplier Disply in Supplier"]]
+        ]
+    },
+
+
+{
+        "dt": "Server Script",
+        "filters": [
+            ["name", "in", ["Trigger Mail For Supplier When RFQ Created"]]
+        ]
+    }
 ]

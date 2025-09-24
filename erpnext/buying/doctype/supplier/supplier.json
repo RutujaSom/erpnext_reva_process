@@ -485,7 +485,7 @@
    "link_fieldname": "party"
   }
  ],
- "modified": "2024-05-08 18:02:57.342931",
+ "modified": "2025-09-23 17:22:25.465544",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Supplier",
@@ -544,6 +544,7 @@
   }
  ],
  "quick_entry": 1,
+ "row_format": "Dynamic",
  "search_fields": "supplier_group",
  "show_name_in_global_search": 1,
  "sort_field": "modified",

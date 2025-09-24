@@ -1,0 +1,13 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Purchase Order",
+  "enabled": 1,
+  "modified": "2025-09-24 18:14:47.664870",
+  "module": "Buying",
+  "name": "Purchase Order Approved Suplier Disply in Supplier",
+  "script": "\nfrappe.ui.form.on(\"Purchase Order\", {\n    onload_post_render: function(frm) {\n        frm.set_query(\"supplier\", {\n            filters: {\n                workflow_state: 'Approved'\n            }\n        });\n    }\n});\n\n",
+  "view": "Form"
+ }
+]
