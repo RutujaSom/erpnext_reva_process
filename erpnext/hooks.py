@@ -694,8 +694,7 @@ fixtures = [
         "filters": [
             ["name", "in", ["Trigger Mail For Supplier When RFQ Created"]]
         ]
-    }
-]
+    },
     
     {"dt": "Workflow", "filters": [["document_type", "=", "Purchase Order"]]},
     {"dt": "Workflow State"},
