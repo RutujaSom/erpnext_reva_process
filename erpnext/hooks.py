@@ -668,12 +668,14 @@ export_python_type_annotations = True
 fields_for_group_similar_items = ["qty", "amount"]
 
 
-
+# Added fitures for reva process
 
 fixtures = [
     {"dt": "Workflow", "filters": [["document_type", "=", "Supplier"]]},
     {"dt": "Workflow State"},
     {"dt": "Workflow Action Master"},
+    
+    #24/9/2025
     
     {"dt": "Workflow", "filters": [["document_type", "=", "Supplier Quotation"]]},
     {"dt": "Workflow State"},
