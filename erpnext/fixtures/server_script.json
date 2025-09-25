@@ -1,1 +1,21 @@
-[]
+[
+ {
+  "allow_guest": 0,
+  "api_method": null,
+  "cron_format": null,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Server Script",
+  "doctype_event": "After Save",
+  "enable_rate_limit": 0,
+  "event_frequency": "All",
+  "modified": "2025-09-18 11:20:05.648041",
+  "module": null,
+  "name": "Trigger Notification For Supplier For Approve Request",
+  "rate_limit_count": 5,
+  "rate_limit_seconds": 86400,
+  "reference_doctype": "Supplier",
+  "script": "if doc.email_id:\n\n    # APPROVED SUPPLIER\n    if doc.workflow_state == \"Approved\":\n\n        # Check if user already exists\n        existing_user = frappe.db.exists(\"User\", doc.email_id)\n\n        if not existing_user:\n\n            # Create new User\n            user = frappe.get_doc({\n                \"doctype\": \"User\",\n                \"email\": doc.email_id,\n                \"first_name\": doc.supplier_name,\n                \"enabled\": 1,\n                \"send_welcome_email\": 0,  # We will send custom email\n                \"roles\": [{\"role\": \"Supplier\"}]  # Ensure role exists\n            })\n            user.insert(ignore_permissions=True)\n            user.save(ignore_permissions=True)\n\n            # Generate a password reset link\n            reset_link = frappe.utils.get_url(\"/update-password?usr=\" + doc.email_id)\n\n            # Email message with login link and reset password link\n            message = (\n                \"Dear \" + doc.supplier_name + \",\\n\\n\"\n                \"Congratulations! Your supplier registration has been approved.\\n\\n\"\n                \"Your supplier portal account has been created.\\n\\n\"\n                \"Please set your password and log in using the link below:\\n\"\n                + reset_link + \"\\n\\n\"\n                \"After setting your password, you can log in at: \"\n                + frappe.utils.get_url(\"/login\") + \"\\n\\n\"\n                \"Best regards,\\n[Your Company Name]\"\n            )\n\n            frappe.sendmail(\n                recipients=[doc.email_id],\n                subject=\"Supplier Registration Approved\",\n                message=message\n            )\n\n        else:\n            # User exists, just send login + reset link\n            reset_link = frappe.utils.get_url(\"/update-password?usr=\" + doc.email_id)\n            message = (\n                \"Dear \" + doc.supplier_name + \",\\n\\n\"\n                \"Your supplier registration has been approved.\\n\\n\"\n                \"You can log in using your existing account.\\n\\n\"\n                \"Reset your password (if needed) using the link:\\n\"\n                + reset_link + \"\\n\\n\"\n                \"Login at: \" + frappe.utils.get_url(\"/login\") + \"\\n\\n\"\n                \"Best regards,\\n[Your Company Name]\"\n            )\n\n            frappe.sendmail(\n                recipients=[doc.email_id],\n                subject=\"Supplier Registration Approved\",\n                message=message\n            )\n\n    # REJECTED SUPPLIER\n    elif doc.workflow_state == \"Rejected\":\n        message = (\n            \"Dear \" + doc.supplier_name + \",\\n\\n\"\n            \"We regret to inform you that your supplier registration has been rejected.\\n\\n\"\n            \"For further details, please contact us.\\n\\n\"\n            \"Best regards,\\n[Your Company Name]\"\n        )\n        frappe.sendmail(\n            recipients=[doc.email_id],\n            subject=\"Supplier Registration Rejected\",\n            message=message\n        )\n\n\n",
+  "script_type": "DocType Event"
+ }
+]
