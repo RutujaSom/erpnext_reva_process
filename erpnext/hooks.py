@@ -668,29 +668,37 @@ export_python_type_annotations = True
 fields_for_group_similar_items = ["qty", "amount"]
 
 
-
+# update Hook for reva process 29/9/2025
 
 fixtures = [
     {"dt": "Workflow", "filters": [["document_type", "=", "Supplier"]]},
     {"dt": "Workflow State"},
     {"dt": "Workflow Action Master"},
     
+    {"dt": "Workflow", "filters": [["document_type", "=", "Supplier Quotation"]]},
+    {"dt": "Workflow State"},
+    {"dt": "Workflow Action Master"},
+
+
+
+{
+        "dt": "Client Script",
+        "filters": [
+            ["name", "in", ["Purchase Order Approved Suplier Disply in Supplier"]]
+        ]
+    },
+
+
+{
+        "dt": "Server Script",
+        "filters": [
+            ["name", "in", ["Trigger Mail For Supplier When RFQ Created"]]
+        ]
+    },
     
     {"dt": "Workflow", "filters": [["document_type", "=", "Purchase Order"]]},
     {"dt": "Workflow State"},
     {"dt": "Workflow Action"},
-
-
-    
-    
-    {
-        "dt": "Server Script",
-        "filters": [
-            ["name", "in", [
-                "Trigger Notification For Supplier For Approve Request"
-            ]]
-        ]
-    }
 ]
 
 
@@ -702,11 +710,8 @@ doc_events = {
 }
 
 
-
-
-
-
 # Add the permission to RM to get the task of employee reporting to him
 permission_query_conditions = {
     "Task": "erpnext.api.task.get_permission_query_conditions"
 }
+
