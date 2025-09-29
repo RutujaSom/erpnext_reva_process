@@ -692,7 +692,7 @@ fixtures = [
 {
         "dt": "Server Script",
         "filters": [
-            ["name", "in", ["Trigger Mail For Supplier When RFQ Created"]]
+            ["name", "in", ["Trigger Mail For Supplier When RFQ getting Created"]]
         ]
     },
     

@@ -1,1 +1,21 @@
-[]
+[
+ {
+  "allow_guest": 0,
+  "api_method": null,
+  "cron_format": null,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Server Script",
+  "doctype_event": "After Insert",
+  "enable_rate_limit": 0,
+  "event_frequency": "All",
+  "modified": "2025-09-24 18:17:38.203425",
+  "module": null,
+  "name": "Trigger Mail For Supplier When RFQ getting Created",
+  "rate_limit_count": 5,
+  "rate_limit_seconds": 86400,
+  "reference_doctype": "Request for Quotation",
+  "script": "\nif doc.doctype == \"Request for Quotation\":\n    for supplier_row in doc.suppliers:\n        supplier_info = frappe.db.get_value(\"Supplier\", supplier_row.supplier,\n                                            [\"email_id\", \"supplier_name\"], as_dict=True)\n        if not supplier_info: continue\n\n        supplier_email = supplier_info.email_id\n        supplier_name = supplier_info.supplier_name or supplier_row.supplier\n\n        if supplier_email:\n            subject = f\"New RFQ Created: {doc.name}\"\n            message = f\"\"\"\n            <p>Dear {supplier_name},</p>\n            <p>A new Request for Quotation <b>{doc.name}</b> has been created and assigned to you.</p>\n            <p>Please review it at your earliest convenience.</p>\n            <br>\n            <p>Best regards,<br>Excellminds</p>\n            \"\"\"\n            frappe.sendmail(recipients=[supplier_email], subject=subject, message=message)\n",
+  "script_type": "DocType Event"
+ }
+]
