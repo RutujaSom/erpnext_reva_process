@@ -252,7 +252,11 @@ class RequestforQuotation(BuyingController):
 			supplier_doc.flags.ignore_mandatory = True
 			supplier_doc.flags.ignore_permissions = True
 
-			supplier_doc.save()
+			""" Added this link to ignore validation after supplier submited 
+			Dev: Rutuja Date:20-09-2025"""
+			supplier_doc.flags.ignore_validate_update_after_submit = True
+			supplier_doc.save(ignore_permissions=True)
+			
 
 	def create_user(self, rfq_supplier, link):
 		user = frappe.get_doc(

@@ -32,51 +32,20 @@ def after_supplier_approved(self):
     """
     # APPROVED SUPPLIER
     if self.workflow_state == "Approved":
-        # Check if user already exists
-        existing_user = frappe.db.exists("User", self.email_id)
-        if not existing_user:
-            # Generate random 10-char password
-            characters = string.ascii_letters + string.digits
-            password = ''.join(random.choices(characters, k=10))
+        
+        # Email message to notifiy supplier
+        message = f"""
+        <p>Dear <b>{self.supplier_name}</b>,</p>
+        <p>Congratulations! Your supplier registration has been <b>approved</b>.</p>
+        
+        <p style="margin-top:20px;">Best regards,<br>[Your Company Name]</p>
+        """
 
-            # Create new User
-            user = frappe.get_doc({
-                "doctype": "User",
-                "email": self.email_id,
-                "first_name": self.supplier_name,
-                "enabled": 1,
-                "send_welcome_email": 0,
-                "roles": [{"role": "Supplier"}]
-            })
-            user.insert(ignore_permissions=True)
-
-            # Set password for the new user
-            frappe.utils.password.update_password(user.name, password)
-
-            # Email message with login details
-            message = f"""
-            <p>Dear <b>{self.supplier_name}</b>,</p>
-            <p>Congratulations! Your supplier registration has been <b>approved</b>.</p>
-            <p>Your supplier portal account has been created. Please use the following credentials to log in:</p>
-            <table style="border:1px solid #ddd; padding:10px;">
-            <tr>
-                <td><b>Username (Email)</b></td>
-                <td>{self.email_id}</td>
-            </tr>
-            <tr>
-                <td><b>Password</b></td>
-                <td>{password}</td>
-            </tr>
-            </table>
-            <p>You can log in here: <a href="{frappe.utils.get_url('/login')}">{frappe.utils.get_url('/login')}</a></p>
-            <p style="margin-top:20px;">Best regards,<br>[Your Company Name]</p>
-            """
-
-            frappe.sendmail(
-                recipients=[self.email_id],
-                subject="Supplier Registration Approved",
-                message=message
-            )
+        frappe.sendmail(
+            recipients=[self.email_id],
+            subject="Supplier Registration Approved",
+            message=message
+        )
 
     # REJECTED SUPPLIER
     elif self.workflow_state == "Rejected":
