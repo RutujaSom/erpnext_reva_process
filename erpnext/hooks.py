@@ -668,7 +668,7 @@ export_python_type_annotations = True
 fields_for_group_similar_items = ["qty", "amount"]
 
 
-
+# update Hook for reva process 29/9/2025
 
 fixtures = [
     {"dt": "Workflow", "filters": [["document_type", "=", "Supplier"]]},
@@ -692,8 +692,9 @@ fixtures = [
 {
         "dt": "Server Script",
         "filters": [
-            ["name", "in", ["Trigger Mail For Supplier When RFQ Created"]]
-        ]
+
+            ["name", "in", ["Trigger Mail For Supplier When RFQ getting Created"]]
+          
     },
     
     {"dt": "Workflow", "filters": [["document_type", "=", "Purchase Order"]]},
