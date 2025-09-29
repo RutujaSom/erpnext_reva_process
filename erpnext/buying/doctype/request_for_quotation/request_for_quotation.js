@@ -329,28 +329,6 @@ frappe.ui.form.on("Request for Quotation", {
 		dialog.show();
 	},
 
-    // custom_supplier_group: function(frm) {
-    //     if (frm.doc.custom_supplier_group) {
-    //         frappe.call({
-    //             method: "erpnext.api.rfq.get_suppliers_by_group",
-    //             args: { supplier_group: frm.doc.custom_supplier_group },
-    //             callback: function(r) {
-    //                 if (r.message) {
-    //                     // Clear existing suppliers
-    //                     frm.clear_table("suppliers");
-
-    //                     // Add all suppliers from group
-    //                     r.message.forEach(function(supp) {
-    //                         let row = frm.add_child("suppliers");
-    //                         row.supplier = supp.name;
-    //                     });
-
-    //                     frm.refresh_field("suppliers");
-    //                 }
-    //             }
-    //         });
-    //     }
-    // },
 
 	custom_supplier_group: function(frm) {
     if (frm.doc.custom_supplier_group) {
@@ -683,4 +661,49 @@ erpnext.buying.RequestforQuotationController = class RequestforQuotationControll
 // for backward compatibility: combine new and previous states
 extend_cscript(cur_frm.cscript, new erpnext.buying.RequestforQuotationController({ frm: cur_frm }));
 
+function refresh_terms(frm) {
+    let combined_terms = "";
+    let rows = frm.doc.add_multiple_terms || [];
 
+    if (!rows.length) {
+        frm.set_value("terms", "");
+        return;
+    }
+
+    // Collect all term names first
+    let term_names = rows.map(row => row.terms).filter(Boolean);
+    term_names = term_names.filter((value, index, array) => array.indexOf(value) === index);
+    if (!term_names.length) {
+        frm.set_value("terms", "");
+        return;
+    }
+
+    // Fetch all terms in one call (keeps sequence)
+    frappe.db.get_list("Terms and Conditions", {
+        filters: { name: ["in", term_names] },
+        fields: ["name", "title", "terms"]
+    }).then(result => {
+        let count = 1;
+
+        // Loop rows in same sequence as child table
+        rows.forEach(row => {
+            let term = result.find(r => r.name === row.terms);
+            if (term) {
+                combined_terms += `<b>${count}. ${term.title}</b><br/>${term.terms}<br/><br/>`;
+                count++;
+            }
+        });
+
+        frm.set_value("terms", combined_terms.trim());
+    });
+}
+
+// Trigger on add/edit/remove
+frappe.ui.form.on("RFQ Terms Table", {
+    terms: function(frm, cdt, cdn) {
+        refresh_terms(frm);
+    },
+    add_multiple_terms_remove: function(frm, cdt, cdn) {
+        refresh_terms(frm);
+    }
+});
