@@ -38,7 +38,7 @@ def after_supplier_approved(self):
         <p>Dear <b>{self.supplier_name}</b>,</p>
         <p>Congratulations! Your supplier registration has been <b>approved</b>.</p>
         
-        <p style="margin-top:20px;">Best regards,<br>[Your Company Name]</p>
+        <p style="margin-top:20px;">Best regards,<br>
         """
 
         frappe.sendmail(
@@ -53,7 +53,7 @@ def after_supplier_approved(self):
         <p>Dear <b>{self.supplier_name}</b>,</p>
         <p>We regret to inform you that your supplier registration has been <b>rejected</b>.</p>
         <p>For further details, please contact us.</p>
-        <p style="margin-top:20px;">Best regards,<br>[Your Company Name]</p>
+        <p style="margin-top:20px;">Best regards,<br>
         """
         frappe.sendmail(
             recipients=[self.email_id],
