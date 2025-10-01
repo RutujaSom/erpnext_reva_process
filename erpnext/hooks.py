@@ -676,20 +676,16 @@ fixtures = [
     {"dt": "Workflow Action Master"},
     
     {"dt": "Workflow", "filters": [["document_type", "=", "Supplier Quotation"]]},
+    {"dt": "Workflow", "filters": [["document_type", "=", "Task"]]},
     {"dt": "Workflow State"},
     {"dt": "Workflow Action Master"},
-
-
-
-{
+	{
         "dt": "Client Script",
         "filters": [
             ["name", "in", ["Purchase Order Approved Suplier Disply in Supplier"]]
         ]
     },
-
-
-{
+	{
         "dt": "Server Script",
         "filters": [
 
